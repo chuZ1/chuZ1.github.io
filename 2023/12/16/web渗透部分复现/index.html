@@ -1,0 +1,660 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="web基础思路总结一个菜鸟的简单渗透日记 常见SQL思路1.堆叠注入  遇到题目就只给单独一个输入框然后进行查询的，直接考虑堆叠注入，一套不解释连招秒了╰(°▽°)╯   堆叠注入 1234567第一步:常规判断闭合&lt;只要给界面搞报错就是成功了&gt;第二步:构造语句查询库名和表名,以单引号闭合题目为例&lt;1&amp;#x27;;show databases;#&gt;注意这里database后">
+<meta property="og:type" content="article">
+<meta property="og:title" content="web渗透部分复现">
+<meta property="og:url" content="http://example.com/2023/12/16/web%E6%B8%97%E9%80%8F%E9%83%A8%E5%88%86%E5%A4%8D%E7%8E%B0/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="web基础思路总结一个菜鸟的简单渗透日记 常见SQL思路1.堆叠注入  遇到题目就只给单独一个输入框然后进行查询的，直接考虑堆叠注入，一套不解释连招秒了╰(°▽°)╯   堆叠注入 1234567第一步:常规判断闭合&lt;只要给界面搞报错就是成功了&gt;第二步:构造语句查询库名和表名,以单引号闭合题目为例&lt;1&amp;#x27;;show databases;#&gt;注意这里database后">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="c:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20231205174259364.png">
+<meta property="og:image" content="c:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20231205174542569.png">
+<meta property="og:image" content="c:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20231205174851323.png">
+<meta property="og:image" content="c:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20231205211154100.png">
+<meta property="og:image" content="c:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20231205214739670.png">
+<meta property="og:image" content="c:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20231205215130127.png">
+<meta property="og:image" content="c:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20231205215253604.png">
+<meta property="og:image" content="c:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20231205215405300.png">
+<meta property="article:published_time" content="2023-12-16T09:31:58.000Z">
+<meta property="article:modified_time" content="2023-12-16T09:33:47.647Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="c:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20231205174259364.png">
+  
+  
+  
+  <title>web渗透部分复现 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.6","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="web渗透部分复现"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-12-16 17:31" pubdate>
+          December 16, 2023 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          165 words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          2 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">web渗透部分复现</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="web基础思路总结"><a href="#web基础思路总结" class="headerlink" title="web基础思路总结"></a>web基础思路总结</h2><p>一个菜鸟的简单渗透日记</p>
+<h3 id="常见SQL思路"><a href="#常见SQL思路" class="headerlink" title="常见SQL思路"></a>常见SQL思路</h3><h4 id="1-堆叠注入"><a href="#1-堆叠注入" class="headerlink" title="1.堆叠注入"></a>1.堆叠注入</h4><p>  遇到题目就只给单独一个输入框然后进行查询的，直接考虑堆叠注入，一套不解释连招秒了╰(<em>°▽°</em>)╯</p>
+<p>  堆叠注入</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs makefile"><span class="hljs-section">第一步:常规判断闭合&lt;只要给界面搞报错就是成功了&gt;</span><br><span class="hljs-section">第二步:构造语句查询库名和表名,以单引号闭合题目为例&lt;1&#x27;;show databases;#&gt;注意这里database后面要加s</span><br><span class="hljs-section">第三步:当我们找到表名之后要尝试将其打开,这是要使用函数handler</span><br><span class="hljs-section">补充handler用法:</span><br>HANDLER tbl_name OPEN; 打开一张表<br>HANDLER tbl_name READ FIRST/NEXT; 获取表中的第一行,FIRST(第一行)、NEXT(下一行)<br>当表名里有数字时要用反引号框起来<br></code></pre></td></tr></table></figure>
+
+<p>可练习题目见</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">强网杯-随便注   <br></code></pre></td></tr></table></figure>
+
+<h3 id="2-空格过滤方法"><a href="#2-空格过滤方法" class="headerlink" title="2.空格过滤方法"></a>2.空格过滤方法</h3><figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs mel">$IFS              <br>$IFS$6                               ——后面的数字<span class="hljs-number">6</span>换成其他数字也行<br>$&#123;IFS&#125; <br>&lt;<br>&lt;&gt;<br>&#123;cat,flag.php&#125;                      ——这里把，替换成了空格键<br>%20                                     ——代表space键<br>%09                                     ——代表Tab键<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-Windows和Linux通用命令分隔符"><a href="#3-Windows和Linux通用命令分隔符" class="headerlink" title="3.Windows和Linux通用命令分隔符"></a>3.Windows和Linux通用命令分隔符<ping ping ping></h3><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs 1c">; : 命令<span class="hljs-number">1</span> ; 命令<span class="hljs-number">2</span>                  ——先执行命令<span class="hljs-number">1</span>再执行命令<span class="hljs-number">2</span><br><span class="hljs-meta">&amp; ：命令1 &amp; 命令2              ——先执行命令1再执行命令2</span><br><span class="hljs-string">| ： 命令1 &amp; 命令2               ——只执行命令2</span><br></code></pre></td></tr></table></figure>
+
+<p>在知道命令分隔符的前提下,我们可以实现一种很神奇的绕过</p>
+<p><img src="C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20231205174259364.png" srcset="/img/loading.gif" lazyload alt="image-20231205174259364"></p>
+<p>可以看见,我们使用分隔符|实现只执行第二个命令<ls> 即列出该目录下所有的文件</p>
+<p>然后可见flag.php这个文件,答案就在眼前,但是当我们构造出查看该文件的命令时,却出现了这样一幕:</p>
+<p><img src="C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20231205174542569.png" srcset="/img/loading.gif" lazyload alt="image-20231205174542569"></p>
+<p>很显然,我们的空格被过滤了＞﹏＜</p>
+<p>用上刚学的空格过滤,我们发现还是打不开这个文件,于是退而求其次,看看另一个文件 里面是什么东西</p>
+<p><img src="C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20231205174851323.png" srcset="/img/loading.gif" lazyload alt="image-20231205174851323"></p>
+<p>发现了源码,发现了一堆被过滤的东西ಥ_ಥ</p>
+<p>这时候就有几种方式来进行绕过了</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-number">1</span>.拼接法绕过<br>  通过源码我们知道过滤了flag这四个字母,这个方法主要是绕过对flag正则匹配的检测，有点悬，目前好像只能拼接末尾的g\ag\lag，我也不太清楚为啥<br>  将lag替换成x，绕过对flag的正匹检测，构建payload<br>  inurl?ip=<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>;x=lag;<span class="hljs-built_in">cat</span><span class="hljs-variable">$IFS</span><span class="hljs-variable">$6f</span><span class="hljs-variable">$x</span>.php&lt;ip中的<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>可以替换为任意数&gt;<br><span class="hljs-number">2</span>.内联执行法<br>可以看到代码没有过滤掉符号`  ， 所以可以利用内联执行的方式直接打开flag文件<br>先执行命令<span class="hljs-built_in">ls</span>，再把<span class="hljs-built_in">ls</span>得到的文件名全部用命令<span class="hljs-built_in">cat</span>打开，构建payload <br>inurl?ip=<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span>;<span class="hljs-built_in">cat</span><span class="hljs-variable">$IFS</span><span class="hljs-variable">$6</span>`ls`<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-文件包含类"><a href="#4-文件包含类" class="headerlink" title="4.文件包含类"></a>4.文件包含类<Warm up></h3><p>常规看源码或者检查网络可以看到一些小提示，比如某个奇怪的文件(●’◡’●)，这时候就可以尝试我们的文件包含</p>
+<p><img src="C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20231205211154100.png" srcset="/img/loading.gif" lazyload alt="image-20231205211154100"></p>
+<p>就像这样，访问该文件，如果发现有<strong>include</strong>函数，实锤</p>
+<h4 id="warm-up-wp："><a href="#warm-up-wp：" class="headerlink" title="warm up wp："></a><strong>warm up</strong> wp：</h4><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs cmake">可以看到<span class="hljs-keyword">include</span>函数没有任何过滤措施，那么我们可以利用本地文件包含漏洞来访问任意文件，以获取flag，但是想要执行<span class="hljs-keyword">include</span>函数，我们需要满足三个条件：<br><br><span class="hljs-number">1</span>. <span class="hljs-keyword">file</span>不为空<br><span class="hljs-number">2</span>. <span class="hljs-keyword">file</span>的值是字符串<br><span class="hljs-number">3</span>. <span class="hljs-keyword">file</span>通过emmm类的checkFile方法校验<br>步骤一：因为我们定义了<span class="hljs-keyword">file</span>的值且是<span class="hljs-keyword">string</span>类型，所以第一个<span class="hljs-keyword">if</span> 的<span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span> 顺利绕过<br>步骤二：因为我们的<span class="hljs-keyword">file</span>的值既不是souce.php也不是hint.php，所以是无法通过该<span class="hljs-keyword">if</span>的，直接放弃这个<span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>的机会，继续往下看。<br>步骤三：mb_substr会将<span class="hljs-keyword">file</span>的值通过一定的规则截取后，再次放入<span class="hljs-keyword">if</span>判断，那么我们可以在<span class="hljs-keyword">file</span>的值前面主动拼接一个souce.php?或者hint.php?，也就是<span class="hljs-keyword">file</span>=source.php?../ffffllllaaaagggg，通过mb_substr截取后的值是souce.php，此时checkFile返回<span class="hljs-keyword">true</span><br></code></pre></td></tr></table></figure>
+
+<p>附上source.php源码截图</p>
+<p><img src="C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20231205214739670.png" srcset="/img/loading.gif" lazyload alt="image-20231205214739670"></p>
+<h3 id="5-PHP伪协议"><a href="#5-PHP伪协议" class="headerlink" title="5.PHP伪协议"></a>5.PHP伪协议<Secret File></h3><h4 id="Secret-File-wp："><a href="#Secret-File-wp：" class="headerlink" title="Secret File wp："></a>Secret File wp：</h4><p>这道题开局有个小心机，有个按键被设置为和背景颜色一致，需要养成全选界面的好习惯，发现之后点击，会发现最后一个界面说的是没看清吗?,这时候就需要抓包(界面如下)来查看中间的一个文件是什么玩意,进入之后代码如下</p>
+<p><img src="C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20231205215130127.png" srcset="/img/loading.gif" lazyload alt="image-20231205215130127"></p>
+<p><img src="C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20231205215253604.png" srcset="/img/loading.gif" lazyload alt="image-20231205215253604"></p>
+<p>访问该flag.php文件</p>
+<p><img src="C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20231205215405300.png" srcset="/img/loading.gif" lazyload alt="image-20231205215405300"></p>
+<p>查看源码也发现不了任何的东西,因为php代码被执行之后是不会再显示出来的ヾ(•ω•&#96;)o</p>
+<p>其实,在我们发现<strong>flag.php</strong>这个神奇文件的时候,第一反应应该是这是一道<strong>PHP伪协议</strong>题</p>
+<p>下面是一种我掌握的<strong>PHP伪协议</strong>用法(有新的继续补充)</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver">在后面加上<br><br>?<span class="hljs-built_in">file</span>=php://<span class="hljs-built_in">filter</span>/<span class="hljs-built_in">read</span>=<span class="hljs-built_in">convert</span>.base64-encode/resource=flag.php即可。<br><br>这是因为 php://<span class="hljs-built_in">filter</span>/<span class="hljs-built_in">read</span>=<span class="hljs-built_in">convert</span>.base64-encode 是一种 PHP 伪协议，用于将文件转换为 base64 格式。通过在 <span class="hljs-variable">$_GET</span> 超全局变量中传递 <span class="hljs-built_in">file</span>=php://<span class="hljs-built_in">filter</span>/<span class="hljs-built_in">read</span>=<span class="hljs-built_in">convert</span>.base64-encode/resource=flag.php，我们可以读取 flag.php 文件的内容并将其转换为 base64 格式。然后，我们可以将该内容解码并查看其中是否包含有用的信息。<br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>web渗透部分复现</div>
+      <div>http://example.com/2023/12/16/web渗透部分复现/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>December 16, 2023</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/12/16/hello-world/" title="Hello World">
+                        <span class="hidden-mobile">Hello World</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
