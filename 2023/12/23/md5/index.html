@@ -16,21 +16,19 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="PHP反序列化magic函数   函数 作用    __construct 当一个对象创建时被调用   __destruct 当一个对象销毁时被调用   __toString 当一个对象被当做字符串使用   __sleep 在对象被序列化之前运行   __wakeup 在对象被反序列化之后被调用   __serialize() 对对象调用serialize方法   __unserialize()">
-<meta property="og:type" content="article">
-<meta property="og:title" content="chuZ">
-<meta property="og:url" content="http://example.com/2023/12/21/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/index.html">
+    <meta property="og:type" content="article">
+<meta property="og:title" content="Md5类题目">
+<meta property="og:url" content="http://example.com/2023/12/23/md5/index.html">
 <meta property="og:site_name" content="chuZ">
-<meta property="og:description" content="PHP反序列化magic函数   函数 作用    __construct 当一个对象创建时被调用   __destruct 当一个对象销毁时被调用   __toString 当一个对象被当做字符串使用   __sleep 在对象被序列化之前运行   __wakeup 在对象被反序列化之后被调用   __serialize() 对对象调用serialize方法   __unserialize()">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-12-21T11:45:12.604Z">
-<meta property="article:modified_time" content="2023-12-22T16:08:06.118Z">
+<meta property="article:published_time" content="2023-12-23T11:47:43.000Z">
+<meta property="article:modified_time" content="2023-12-23T11:48:48.155Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>chuZ</title>
+  <title>Md5类题目 - chuZ</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -196,7 +194,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text=""></span>
+            <span id="subtitle" data-typed-text="Md5类题目"></span>
           
         </div>
 
@@ -207,8 +205,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-12-21 19:45" pubdate>
-          December 21, 2023 pm
+        <time datetime="2023-12-23 19:47" pubdate>
+          December 23, 2023 pm
         </time>
       </span>
     
@@ -219,7 +217,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          33 words
+          0 words
         
       </span>
     
@@ -267,85 +265,12 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header"></h1>
+            <h1 id="seo-header">Md5类题目</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="PHP反序列化"><a href="#PHP反序列化" class="headerlink" title="PHP反序列化"></a>PHP反序列化</h1><h2 id="magic函数"><a href="#magic函数" class="headerlink" title="magic函数"></a>magic函数</h2><table>
-<thead>
-<tr>
-<th>函数</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>__construct</td>
-<td>当一个对象创建时被调用</td>
-</tr>
-<tr>
-<td>__destruct</td>
-<td>当一个对象销毁时被调用</td>
-</tr>
-<tr>
-<td>__toString</td>
-<td>当一个对象被当做字符串使用</td>
-</tr>
-<tr>
-<td>__sleep</td>
-<td>在对象被序列化之前运行</td>
-</tr>
-<tr>
-<td>__wakeup</td>
-<td>在对象被反序列化之后被调用</td>
-</tr>
-<tr>
-<td>__serialize()</td>
-<td>对对象调用serialize方法</td>
-</tr>
-<tr>
-<td>__unserialize()</td>
-<td>对对象调用unserialize方法</td>
-</tr>
-<tr>
-<td>__call()</td>
-<td>在对象上下文中调用不可访问的方法时触发</td>
-</tr>
-<tr>
-<td>__callStatic()</td>
-<td>在静态上下文中调用不可访问的方法时触发</td>
-</tr>
-<tr>
-<td>__get()</td>
-<td>用于从不可访问的属性读取数据</td>
-</tr>
-<tr>
-<td>__set()</td>
-<td>用于将数据写入不可访问的属性</td>
-</tr>
-<tr>
-<td>__isset()</td>
-<td>在不可访问的属性上调用isset()或empty()触发</td>
-</tr>
-<tr>
-<td>__unset()</td>
-<td>在不可访问的属性上使用unset()时触发</td>
-</tr>
-<tr>
-<td>__invoke()</td>
-<td>当脚本尝试将对象调用为函数时触发</td>
-</tr>
-</tbody></table>
-<h2 id="反序列化特点"><a href="#反序列化特点" class="headerlink" title="反序列化特点"></a>反序列化特点</h2><p>1.在反序列化时可以对序列化的变量进行任意修改</p>
-<p>2.如果传递的字符串不可以序列化，则返回FALSE</p>
-<p>3.如果对象没有预定义，反序列化得到的对象是_PHP_Incomplete_Class</p>
-<p>4.当同时定义了wakeup()方法和unserilize()方法时，wakeup方法将不会起效，只有unserilize方法会起作用</p>
-<h2 id="反序列化作用"><a href="#反序列化作用" class="headerlink" title="反序列化作用"></a>反序列化作用</h2><p>1.传输对象</p>
-<p>2.用作缓存(cookie,session)</p>
-<h2 id="反序列化可用时机"><a href="#反序列化可用时机" class="headerlink" title="反序列化可用时机"></a>反序列化可用时机</h2><p>1.unserialize函数的参数可控，比如通过GET请求传参(漏洞触发点)</p>
-<p>2.脚本中定义有Magic方法,里有向PHP文件中写数据或者执行命令的的操作,如_destruct(),unlink()</p>
-<p>3.读写的内容需要有对象中成员变量的值，比如filename</p>
-
+                
                 
               </div>
             
@@ -362,8 +287,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div></div>
-      <div>http://example.com/2023/12/21/PHP反序列化/</div>
+      <div>Md5类题目</div>
+      <div>http://example.com/2023/12/23/md5/</div>
     </div>
     <div class="license-meta">
       
@@ -375,7 +300,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>December 21, 2023</div>
+          <div>December 23, 2023</div>
         </div>
       
       
@@ -407,12 +332,18 @@
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/2023/12/23/Untitled/" title="">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile"></span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/12/16/YL%E6%B8%97%E9%80%8F%E6%97%A5%E8%AE%B0/" title="YL渗透日记">
-                        <span class="hidden-mobile">YL渗透日记</span>
+                      <a href="/2023/12/23/ssti%E6%A8%A1%E7%89%88%E6%B3%A8%E5%85%A5/" title="ssti模版注入">
+                        <span class="hidden-mobile">ssti模版注入</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
