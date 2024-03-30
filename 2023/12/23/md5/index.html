@@ -16,13 +16,15 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta property="og:type" content="article">
+    <meta name="description" content="MD5相关内容科学计数法（0e绕过）md5() 遇到「公式」，会先「运算」，再对运算结果「计算」MD5。 由于0和任何数相乘都等于0，所以0e开头的任何数，其MD5都是相同的。 比如 md5(‘0e1234’)，会先运算成 md5(0)，再计算MD5值。 补充： 0e是科学计数法，大小写等价，即 0e 和 0E 的结果相同。科学记数法是一种记数的方法。把一个数表示成a与10的n次幂相乘的形式。格式">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Md5类题目">
 <meta property="og:url" content="http://example.com/2023/12/23/md5/index.html">
 <meta property="og:site_name" content="chuZ">
+<meta property="og:description" content="MD5相关内容科学计数法（0e绕过）md5() 遇到「公式」，会先「运算」，再对运算结果「计算」MD5。 由于0和任何数相乘都等于0，所以0e开头的任何数，其MD5都是相同的。 比如 md5(‘0e1234’)，会先运算成 md5(0)，再计算MD5值。 补充： 0e是科学计数法，大小写等价，即 0e 和 0E 的结果相同。科学记数法是一种记数的方法。把一个数表示成a与10的n次幂相乘的形式。格式">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-12-23T11:47:43.000Z">
-<meta property="article:modified_time" content="2023-12-23T11:48:48.155Z">
+<meta property="article:modified_time" content="2023-12-23T12:22:26.628Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -217,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          0 words
+          106 words
         
       </span>
     
@@ -270,7 +272,46 @@
             
               <div class="markdown-body">
                 
-                
+                <h1 id="MD5相关内容"><a href="#MD5相关内容" class="headerlink" title="MD5相关内容"></a>MD5相关内容</h1><h2 id="科学计数法（0e绕过）"><a href="#科学计数法（0e绕过）" class="headerlink" title="科学计数法（0e绕过）"></a>科学计数法（0e绕过）</h2><p>md5() 遇到「公式」，会先「运算」，再对运算结果「计算」MD5。</p>
+<p>由于0和任何数相乘都等于0，所以0e开头的任何数，其MD5都是相同的。</p>
+<p>比如 md5(‘0e1234’)，会先运算成 md5(0)，再计算MD5值。</p>
+<p>补充：</p>
+<p>0e是科学计数法，大小写等价，即 0e 和 0E 的结果相同。<br>科学记数法是一种记数的方法。把一个数表示成a与10的n次幂相乘的形式。<br>格式为：a e b&#x3D;a×10^b，即a乘以10的b次幂。</p>
+<p>代码示例:</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs scss">echo <span class="hljs-built_in">md5</span>(<span class="hljs-number">0</span>)<span class="hljs-selector-class">.PHP_EOL</span>;<br>echo <span class="hljs-built_in">md5</span>(<span class="hljs-number">0</span>e123)<span class="hljs-selector-class">.PHP_EOL</span>;<br>echo <span class="hljs-built_in">md5</span>(<span class="hljs-number">0</span>e456)<span class="hljs-selector-class">.PHP_EOL</span>;<br>echo <span class="hljs-built_in">md5</span>(<span class="hljs-number">0</span>E456);<br></code></pre></td></tr></table></figure>
+
+<p>输出为:</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">cfcd208495d565ef66e7dff9f98764da</span><br>cfcd208495d565ef66e7dff9f98764da<br>cfcd208495d565ef66e7dff9f98764da<br>cfcd208495d565ef66e7dff9f98764da<br></code></pre></td></tr></table></figure>
+
+<p>可见不同的式子在加上0e前缀之后,编写出来的md5值都相等,且可以看见0e不区分大小写</p>
+<h3 id="可用绕过思路"><a href="#可用绕过思路" class="headerlink" title="可用绕过思路"></a>可用绕过思路</h3><h4 id="1-遇到弱比较（-md5-a-md5-b-）时，可以使用-0e绕过。"><a href="#1-遇到弱比较（-md5-a-md5-b-）时，可以使用-0e绕过。" class="headerlink" title="1.遇到弱比较（ md5(a)&#x3D;&#x3D;md5(b) ）时，可以使用 0e绕过。"></a>1.<strong>遇到弱比较（ md5(a)&#x3D;&#x3D;md5(b) ）时，可以使用 0e绕过。</strong></h4><p>实例：</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs abnf">var_dump(md5(<span class="hljs-number">0</span>e123) <span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span> md5(<span class="hljs-number">0</span>e456))<span class="hljs-comment">;</span><br>var_dump(md5(<span class="hljs-number">0</span>e123) <span class="hljs-operator">=</span><span class="hljs-operator">=</span> md5(<span class="hljs-number">0</span>e456))<span class="hljs-comment">;</span><br></code></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight isbl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs isbl"><span class="hljs-function"><span class="hljs-title">bool</span>(<span class="hljs-variable"><span class="hljs-literal">true</span></span>)</span><br><span class="hljs-function"><span class="hljs-title">bool</span>(<span class="hljs-variable"><span class="hljs-literal">true</span></span>)</span><br></code></pre></td></tr></table></figure>
+
+<p>0e绕过还有一种变体：如果某个字符串的MD5值是0e开头的，在比较时，PHP也会先把它计算成 0，再参与比较。</p>
+<h4 id="2-遇到比较（-md5-a-0-），可以传入特殊字符绕过。"><a href="#2-遇到比较（-md5-a-0-），可以传入特殊字符绕过。" class="headerlink" title="2.遇到比较（ md5(a)&#x3D;&#x3D;0 ），可以传入特殊字符绕过。"></a>2.遇到比较（ md5(a)&#x3D;&#x3D;0 ），可以传入特殊字符绕过。</h4><p> 实例：</p>
+<figure class="highlight isbl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs isbl"><span class="hljs-variable">echo</span> <span class="hljs-function"><span class="hljs-title">md5</span>(<span class="hljs-string">&#x27;QNKCDZO&#x27;</span>).PHP_EOL;</span><br><span class="hljs-function"><span class="hljs-title">var_dump</span>(<span class="hljs-title">md5</span>(<span class="hljs-string">&#x27;QNKCDZO&#x27;</span>) == <span class="hljs-number">0</span>);</span><br></code></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight isbl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs isbl"><span class="hljs-number">0</span><span class="hljs-variable">e830400451993494058024219903391</span><br><span class="hljs-function"><span class="hljs-title">bool</span>(<span class="hljs-variable"><span class="hljs-literal">true</span></span>)</span><br></code></pre></td></tr></table></figure>
+
+<p>一些MD5值为0e开头的字符串：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">QNKCDZO</span>   =&gt; <span class="hljs-number">0</span>e830400451993494058024219903391<br><span class="hljs-attr">240610708</span> =&gt; <span class="hljs-number">0</span>e462097431906509019562988736854<br><span class="hljs-attr">s878926199a</span> =&gt; <span class="hljs-number">0</span>e545993274517709034328855841020<br><span class="hljs-attr">s155964671a</span> =&gt; <span class="hljs-number">0</span>e342768416822451524974117254469<br><span class="hljs-attr">s214587387a</span> =&gt; <span class="hljs-number">0</span>e848240448830537924465865611904<br><span class="hljs-attr">s214587387a</span> =&gt; <span class="hljs-number">0</span>e848240448830537924465865611904<br></code></pre></td></tr></table></figure>
+
+<h2 id="数组类型"><a href="#数组类型" class="headerlink" title="数组类型"></a>数组类型</h2><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">md5</span><span class="hljs-params">()</span></span>不能处理数组,数组都会报回一个警告信息,不用管<br></code></pre></td></tr></table></figure>
+
+<h3 id="绕过思路"><a href="#绕过思路" class="headerlink" title="绕过思路"></a>绕过思路</h3><h4 id="1-遇到强比较-a-b-时"><a href="#1-遇到强比较-a-b-时" class="headerlink" title="1.遇到强比较(a&#x3D;&#x3D;&#x3D;b)时"></a>1.遇到强比较(a&#x3D;&#x3D;&#x3D;b)时</h4><p>当遇到这种三个等号的强比较类型题目时,可以使用数组类进行绕过</p>
+<p>GET传参时可以使用类似</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-selector-tag">a</span><span class="hljs-selector-attr">[]</span>=<span class="hljs-number">1</span>&amp;<span class="hljs-selector-tag">b</span><span class="hljs-selector-attr">[]</span>=<span class="hljs-number">2</span><br></code></pre></td></tr></table></figure>
+
+<p>进行绕过</p>
+<h2 id="算数运算配合自动类型转换"><a href="#算数运算配合自动类型转换" class="headerlink" title="算数运算配合自动类型转换"></a>算数运算配合自动类型转换</h2><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">md5</span><span class="hljs-params">()</span></span> 遇到运算符，会先运算，再计算结果的MD5值。<br></code></pre></td></tr></table></figure>
+
+<p>当字符串与数字类型运算时，会将字符串转换成数字类型，再参与运算，最后计算运算结果的MD5值。</p>
+<h2 id="数值类型"><a href="#数值类型" class="headerlink" title="数值类型"></a>数值类型</h2><p>虽然 md5() 要求传入字符串，但传入整数或小数也不会报错；数字相同时，数值型和字符串的计算结果是相同的。</p>
+
                 
               </div>
             
